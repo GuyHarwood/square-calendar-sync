@@ -39,6 +39,7 @@ export interface SquareAppointmentsResponse {
 }
 
 export interface SquareConfig {
+  daysAhead: number;
   accessToken: string;
   applicationId: string;
   locationId: string;

@@ -5,6 +5,7 @@ import { SquareConfig, SquareAppointment } from './types'
 jest.mock('./square-client')
 
 const mockConfig: SquareConfig = {
+  daysAhead: 30,
   accessToken: 'test-token',
   applicationId: 'test-app-id',
   locationId: 'test-location-id',

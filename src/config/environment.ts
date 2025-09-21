@@ -4,6 +4,7 @@ import { SquareConfig } from '../appointments/types';
 dotenv.config();
 
 export function getSquareConfig(): SquareConfig {
+  const daysAhead = 90;
   const accessToken = process.env.SQUARE_ACCESS_TOKEN;
   const applicationId = process.env.SQUARE_APPLICATION_ID;
   const locationId = process.env.SQUARE_LOCATION_ID;
@@ -22,6 +23,7 @@ export function getSquareConfig(): SquareConfig {
   }
 
   return {
+    daysAhead,
     accessToken,
     applicationId,
     locationId,

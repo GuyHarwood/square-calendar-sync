@@ -4,6 +4,8 @@
   "description": "Synchronises a squareup.com appointment calendar with an Apple iCal calendar",
   "main": "dist/app.js",
   "scripts": {
+    "start": "node ./dist/app.js",
+    "clean": "rm -rf ./dist",
     "build": "tsc",
     "dev": "ts-node src/app.ts",
     "test": "jest",

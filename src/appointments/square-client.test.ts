@@ -5,6 +5,7 @@ import { Client } from 'square';
 jest.mock('square');
 
 const mockConfig: SquareConfig = {
+  daysAhead: 30,
   accessToken: 'test-token',
   applicationId: 'test-app-id',
   locationId: 'test-location-id',
