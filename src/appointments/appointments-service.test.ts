@@ -40,6 +40,12 @@ const mockCancelledAppointment: SquareAppointment = {
   status: 'CANCELLED',
 }
 
+const mockUndefinedStatusAppointment: SquareAppointment = {
+  ...mockAppointment,
+  id: 'appointment-3',
+  status: undefined
+}
+
 describe('AppointmentsService', () => {
   let service: AppointmentsService
   let mockSquareClient: jest.Mocked<SquareAppointmentsClient>
@@ -59,15 +65,17 @@ describe('AppointmentsService', () => {
   describe('getAllFutureAppointments', () => {
     it('should fetch all future appointments and filter active ones', async () => {
       mockSquareClient.getFutureAppointments.mockResolvedValue({
-        appointments: [mockAppointment, mockCancelledAppointment],
+        appointments: [mockAppointment, mockCancelledAppointment, mockUndefinedStatusAppointment],
         cursor: undefined,
       })
 
       const result = await service.getAllFutureAppointments()
 
-      expect(result).toHaveLength(1)
+      expect(result).toHaveLength(2)
       expect(result[0].id).toBe('appointment-1')
       expect(result[0].status).toBe('ACCEPTED')
+      expect(result[1].id).toBe('appointment-3')
+      expect(result[1].status).toBe(undefined)
     })
 
     it('should handle pagination', async () => {

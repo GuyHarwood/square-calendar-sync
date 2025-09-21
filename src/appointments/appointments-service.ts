@@ -32,7 +32,7 @@ export class AppointmentsService {
 
       return appointments.filter(
         (appointment) =>
-          appointment.status === 'ACCEPTED' || appointment.status === 'PENDING'
+          appointment.status === 'ACCEPTED' || appointment.status === 'PENDING' || appointment.status === undefined
       )
     } catch (error) {
       throw new Error(

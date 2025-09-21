@@ -1,7 +1,7 @@
 export interface SquareAppointment {
   id: string;
   locationId: string;
-  status: 'ACCEPTED' | 'PENDING' | 'CANCELLED' | 'DECLINED' | 'NO_SHOW';
+  status?: 'ACCEPTED' | 'PENDING' | 'CANCELLED' | 'DECLINED' | 'NO_SHOW';
   startAt: string;
   appointmentSegments: AppointmentSegment[];
   version: number;
