@@ -1,27 +1,43 @@
 # Square Cal Sync
 
 ## Summary
-Synchronises a squareup.com appointment calendar with an Apple iCal calendar, on a schedule.
+
+Synchronises a squareup.com appointment calendar with an Apple iCal calendar via the square API.
 
 ## Requirements
 
-When executed it will access the squareup.com API and read all future appointments and synchronise these with an apple calendar.  Each apple calendar entry will need to carry some kind of identifier from squareup.com so that each time it syncs, it understands which bookings have been modified since the last sync.  To help manage this state locally it should have a sqlite database, if necessary.  Each sync process will have its own UUID value, and when the sync process is complete it will output a log file of all actions that took place.  The log file will be named by the current date and time and the UUID.  
-
-## Project structure
-
-The project will use feature folders for all code.  A feature folder will contain the unit tests and service implementation in the same folder.
-There will be an app.ts in the root of the app.
+When executed it will access the squareup.com API, read future appointments (up to a maximum of 31 days ahead, a limitation by square) and synchronise these with an apple calendar. Each apple calendar entry is populated with a square appointment identifier for easy synchronisation of modified entries.
 
 ## Tech Stack
-- Node.Js v22
+
 - Typescript
   - Prettier for code formatting
   - Jest for unit tests
-- SQLite (for local data & cache)
--  
 
 ## Prerequisites
-- Node JS v22
-- Square Developer Account with API access
-- Apple ID 
 
+- Node JS (v22 LTS)
+- Square Developer Account with API access
+- Apple ID
+
+## Installation & setup
+
+Install all the things (examples below use yarn)
+
+`yarn install`
+
+Create and populate your env file
+
+`cp .example.env .env`
+
+run the unit tests...
+
+`yarn test`
+
+run the integration tests...
+
+`yarn test:integration`
+
+run the app...
+
+`yarn start`
