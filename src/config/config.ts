@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv'
 import { SquareConfig } from '../appointments/types'
+import { CalendarCredentials } from '../ical'
 
 dotenv.config()
 
@@ -28,5 +29,21 @@ export function getSquareConfig (): SquareConfig {
     applicationId,
     locationId,
     environment,
+  }
+}
+
+export function getAppleCalendarConfig (): CalendarCredentials {
+  const appleUsername = process.env.APPLE_USERNAME
+  const appPassword = process.env.APPLE_APP_PASSWORD
+  const caldavServerUrl = process.env.APPLE_CALDAV_SERVER
+
+  if (!appleUsername || !appPassword || !caldavServerUrl) {
+    throw new Error('Missing required Apple Calendar configuration.  Please check your environment variables.')
+  }
+
+  return {
+    appleId: appleUsername,
+    appPassword: appPassword,
+    caldavServerUrl: caldavServerUrl
   }
 }

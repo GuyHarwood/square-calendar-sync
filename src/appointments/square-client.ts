@@ -1,14 +1,14 @@
-import { Client, Environment } from 'square';
+import { Client, Environment } from 'square'
 import {
   SquareConfig,
   SquareAppointment,
   SquareAppointmentsFilter,
   SquareAppointmentsResponse,
-} from './types';
+} from './types'
 
 export class SquareAppointmentsClient {
-  private client: Client;
-  private locationId: string;
+  private client: Client
+  private locationId: string
 
   constructor(config: SquareConfig) {
     this.client = new Client({
@@ -17,15 +17,15 @@ export class SquareAppointmentsClient {
         config.environment === 'production'
           ? Environment.Production
           : Environment.Sandbox,
-    });
-    this.locationId = config.locationId;
+    })
+    this.locationId = config.locationId
   }
 
   async getAppointments(
     filter: Partial<SquareAppointmentsFilter> = {}
   ): Promise<SquareAppointmentsResponse> {
     try {
-      const bookingsApi = this.client.bookingsApi;
+      const bookingsApi = this.client.bookingsApi
 
       const response = await bookingsApi.listBookings(
         filter.limit,
@@ -35,14 +35,14 @@ export class SquareAppointmentsClient {
         filter.locationId || this.locationId,
         filter.startAtMin,
         filter.startAtMax
-      );
+      )
 
       if (response.result.errors && response.result.errors.length > 0) {
         throw new Error(
           `Square API error: ${response.result.errors
             .map((e: any) => e.detail)
             .join(', ')}`
-        );
+        )
       }
 
       return {
@@ -50,52 +50,52 @@ export class SquareAppointmentsClient {
           this.mapToSquareAppointment
         ),
         cursor: response.result.cursor,
-      };
+      }
     } catch (error) {
       if (error instanceof Error) {
-        throw new Error(`Failed to fetch appointments: ${error.message}`);
+        throw new Error(`Failed to fetch appointments: ${error.message}`)
       }
-      throw new Error('Failed to fetch appointments: Unknown error');
+      throw new Error('Failed to fetch appointments: Unknown error')
     }
   }
 
   async getAppointmentById(appointmentId: string): Promise<SquareAppointment> {
     try {
-      const bookingsApi = this.client.bookingsApi;
-      const response = await bookingsApi.retrieveBooking(appointmentId);
+      const bookingsApi = this.client.bookingsApi
+      const response = await bookingsApi.retrieveBooking(appointmentId)
 
       if (response.result.errors && response.result.errors.length > 0) {
         throw new Error(
           `Square API error: ${response.result.errors
             .map((e: any) => e.detail)
             .join(', ')}`
-        );
+        )
       }
 
       if (!response.result.booking) {
-        throw new Error(`Appointment with ID ${appointmentId} not found`);
+        throw new Error(`Appointment with ID ${appointmentId} not found`)
       }
 
-      return this.mapToSquareAppointment(response.result.booking);
+      return this.mapToSquareAppointment(response.result.booking)
     } catch (error) {
       if (error instanceof Error) {
-        throw new Error(`Failed to fetch appointment: ${error.message}`);
+        throw new Error(`Failed to fetch appointment: ${error.message}`)
       }
-      throw new Error('Failed to fetch appointment: Unknown error');
+      throw new Error('Failed to fetch appointment: Unknown error')
     }
   }
 
   async getFutureAppointments(
     daysAhead: number = 30
   ): Promise<SquareAppointmentsResponse> {
-    const now = new Date();
-    const future = new Date();
-    future.setDate(now.getDate() + daysAhead);
+    const now = new Date()
+    const future = new Date()
+    future.setDate(now.getDate() + daysAhead)
 
     return this.getAppointments({
       startAtMin: now.toISOString(),
       startAtMax: future.toISOString(),
-    });
+    })
   }
 
   private mapToSquareAppointment(booking: any): SquareAppointment {
@@ -109,6 +109,6 @@ export class SquareAppointmentsClient {
       createdAt: booking.createdAt,
       updatedAt: booking.updatedAt,
       source: booking.bookingSource,
-    };
+    }
   }
 }

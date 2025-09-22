@@ -43,7 +43,7 @@ const mockCancelledAppointment: SquareAppointment = {
 const mockUndefinedStatusAppointment: SquareAppointment = {
   ...mockAppointment,
   id: 'appointment-3',
-  status: undefined
+  status: undefined,
 }
 
 describe('AppointmentsService', () => {
@@ -55,9 +55,13 @@ describe('AppointmentsService', () => {
       getAppointments: jest.fn(),
       getAppointmentById: jest.fn(),
       getFutureAppointments: jest.fn(),
-    } as any;
+    } as any
 
-    (SquareAppointmentsClient as jest.MockedClass<typeof SquareAppointmentsClient>).mockImplementation(() => mockSquareClient)
+    ;(
+      SquareAppointmentsClient as jest.MockedClass<
+        typeof SquareAppointmentsClient
+      >
+    ).mockImplementation(() => mockSquareClient)
 
     service = new AppointmentsService(mockConfig)
   })
@@ -65,7 +69,11 @@ describe('AppointmentsService', () => {
   describe('getAllFutureAppointments', () => {
     it('should fetch all future appointments and filter active ones', async () => {
       mockSquareClient.getFutureAppointments.mockResolvedValue({
-        appointments: [mockAppointment, mockCancelledAppointment, mockUndefinedStatusAppointment],
+        appointments: [
+          mockAppointment,
+          mockCancelledAppointment,
+          mockUndefinedStatusAppointment,
+        ],
         cursor: undefined,
       })
 
@@ -116,7 +124,10 @@ describe('AppointmentsService', () => {
         cursor: undefined,
       })
 
-      const result = await service.getAppointmentsByDateRange(startDate, endDate)
+      const result = await service.getAppointmentsByDateRange(
+        startDate,
+        endDate
+      )
 
       expect(result).toHaveLength(1)
       expect(mockSquareClient.getAppointments).toHaveBeenCalledWith({
@@ -140,7 +151,10 @@ describe('AppointmentsService', () => {
           cursor: undefined,
         })
 
-      const result = await service.getAppointmentsByDateRange(startDate, endDate)
+      const result = await service.getAppointmentsByDateRange(
+        startDate,
+        endDate
+      )
 
       expect(result).toHaveLength(2)
       expect(mockSquareClient.getAppointments).toHaveBeenCalledTimes(2)
@@ -164,9 +178,9 @@ describe('AppointmentsService', () => {
         new Error('Not found')
       )
 
-      await expect(
-        service.getAppointmentById('non-existent')
-      ).rejects.toThrow('Failed to retrieve appointment non-existent: Not found')
+      await expect(service.getAppointmentById('non-existent')).rejects.toThrow(
+        'Failed to retrieve appointment non-existent: Not found'
+      )
     })
   })
 
@@ -197,12 +211,17 @@ describe('AppointmentsService', () => {
       })
 
       it('should return true for pending appointments', () => {
-        const pendingAppointment = { ...mockAppointment, status: 'PENDING' as const }
+        const pendingAppointment = {
+          ...mockAppointment,
+          status: 'PENDING' as const,
+        }
         expect(service.isAppointmentActive(pendingAppointment)).toBe(true)
       })
 
       it('should return false for cancelled appointments', () => {
-        expect(service.isAppointmentActive(mockCancelledAppointment)).toBe(false)
+        expect(service.isAppointmentActive(mockCancelledAppointment)).toBe(
+          false
+        )
       })
     })
 
@@ -222,7 +241,9 @@ describe('AppointmentsService', () => {
             },
           ],
         }
-        const duration = service.getAppointmentDuration(appointmentNoIntermission)
+        const duration = service.getAppointmentDuration(
+          appointmentNoIntermission
+        )
         expect(duration).toBe(60)
       })
 

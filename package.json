@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node ./dist/app.js",
     "clean": "rm -rf ./dist",
-    "build": "tsc",
+    "build": "tsc && rm -rf ./dist/**/*.test.js && rm -rf ./dist/**/*.test.d.ts && rm -rf ./dist/**/*.test.js.map && rm -rf ./dist/**/*.test.d.ts.map",
     "dev": "ts-node src/app.ts",
     "test": "jest",
     "test:watch": "jest --watch",
