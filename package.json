@@ -8,7 +8,7 @@
     "clean": "rm -rf ./dist",
     "build": "tsc && rm -rf ./dist/**/*.test.js && rm -rf ./dist/**/*.test.d.ts && rm -rf ./dist/**/*.test.js.map && rm -rf ./dist/**/*.test.d.ts.map",
     "dev": "ts-node src/app.ts",
-    "test": "jest",
+    "test": "jest --testPathIgnorePatterns=integration.test.ts",
     "test:watch": "jest --watch",
     "test:integration": "jest --testNamePattern=integration",
     "format": "prettier --write src/**/*.ts"

@@ -339,19 +339,6 @@ export class AppleCalendarService implements ICalendarService {
     return event as CalendarEvent
   }
 
-  private parseICalEvents(icalData: string): CalendarEvent[] {
-    const events: CalendarEvent[] = []
-    const eventBlocks = icalData.split('BEGIN:VEVENT').slice(1)
-
-    for (const block of eventBlocks) {
-      const eventData =
-        'BEGIN:VEVENT' + block.split('END:VEVENT')[0] + 'END:VEVENT'
-      events.push(this.parseICalEvent(eventData))
-    }
-
-    return events
-  }
-
   private parseICalDate(dateString: string): Date {
     if (dateString.length === 8) {
       const year = parseInt(dateString.substring(0, 4))
