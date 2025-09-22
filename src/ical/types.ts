@@ -13,6 +13,7 @@ export interface CalendarCredentials {
   appleId: string
   appPassword: string
   caldavServerUrl: string
+  calendarName: string
 }
 
 export interface ICalendarService {

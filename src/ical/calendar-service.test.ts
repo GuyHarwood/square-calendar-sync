@@ -1,24 +1,87 @@
 import { AppleCalendarService } from './calendar-service'
-import { CalendarEvent, CalendarCredentials } from './types'
+import { CalendarEvent } from './types'
+import { getAppleCalendarConfig } from '../config/config'
 
-const mockCredentials: CalendarCredentials = {
-  appleId: 'test@example.com',
-  appPassword: 'test-password',
-  caldavServerUrl: 'url'
-}
+const appleCredentials = getAppleCalendarConfig()
 
 global.fetch = jest.fn()
+
+const mockPrincipalResponse = `<?xml version="1.0" encoding="utf-8"?>
+<D:multistatus xmlns:D="DAV:">
+  <D:response>
+    <D:href>/</D:href>
+    <D:propstat>
+      <D:prop>
+        <D:current-user-principal>
+          <D:href>/123456789/principal/</D:href>
+        </D:current-user-principal>
+      </D:prop>
+      <D:status>HTTP/1.1 200 OK</D:status>
+    </D:propstat>
+  </D:response>
+</D:multistatus>`
+
+const mockCalendarHomeResponse = `<?xml version="1.0" encoding="utf-8"?>
+<D:multistatus xmlns:D="DAV:" xmlns:C="urn:ietf:params:xml:ns:caldav">
+  <D:response>
+    <D:href>/123456789/principal/</D:href>
+    <D:propstat>
+      <D:prop>
+        <C:calendar-home-set>
+          <D:href>/123456789/calendars/</D:href>
+        </C:calendar-home-set>
+      </D:prop>
+      <D:status>HTTP/1.1 200 OK</D:status>
+    </D:propstat>
+  </D:response>
+</D:multistatus>`
+
+const mockCalendarListResponse = `<?xml version="1.0" encoding="utf-8"?>
+<D:multistatus xmlns:D="DAV:" xmlns:C="urn:ietf:params:xml:ns:caldav">
+  <D:response>
+    <D:href>/123456789/calendars/square-appointments/</D:href>
+    <D:propstat>
+      <D:prop>
+        <D:resourcetype>
+          <D:collection/>
+          <C:calendar/>
+        </D:resourcetype>
+        <D:displayname>Square Appointments</D:displayname>
+        <D:getctag>test-ctag</D:getctag>
+      </D:prop>
+      <D:status>HTTP/1.1 200 OK</D:status>
+    </D:propstat>
+  </D:response>
+</D:multistatus>`
 
 describe('AppleCalendarService', () => {
   let service: AppleCalendarService
 
   beforeEach(() => {
-    service = new AppleCalendarService(mockCredentials)
+    service = new AppleCalendarService(appleCredentials)
     jest.clearAllMocks()
   })
 
+  const setupCalDAVMocks = () => {
+    ;(fetch as jest.Mock)
+      .mockResolvedValueOnce({
+        ok: true,
+        text: jest.fn().mockResolvedValue(mockPrincipalResponse),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        text: jest.fn().mockResolvedValue(mockCalendarHomeResponse),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        text: jest.fn().mockResolvedValue(mockCalendarListResponse),
+      })
+  }
+
   describe('addEvent', () => {
     it('should create a new calendar event', async () => {
+      setupCalDAVMocks()
+
       const mockEvent: CalendarEvent = {
         title: 'Test Event',
         description: 'Test Description',
@@ -36,12 +99,13 @@ describe('AppleCalendarService', () => {
       const eventId = await service.addEvent(mockEvent)
 
       expect(eventId).toMatch(/^square-\d+-[a-z0-9]+@squarecalsync\.local$/)
-      expect(fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/calendars/Square Appointments/events'),
+      expect(fetch).toHaveBeenLastCalledWith(
+        expect.stringContaining(`/123456789/calendars/square-appointments/${eventId}.ics`),
         expect.objectContaining({
-          method: 'POST',
+          method: 'PUT',
           headers: expect.objectContaining({
-            'Content-Type': 'text/calendar',
+            'Content-Type': 'text/calendar; charset=utf-8',
+            'If-None-Match': '*',
             Authorization: expect.stringContaining('Basic'),
           }),
           body: expect.stringContaining('BEGIN:VCALENDAR'),
@@ -50,6 +114,8 @@ describe('AppleCalendarService', () => {
     })
 
     it('should handle all-day events', async () => {
+      setupCalDAVMocks()
+
       const mockEvent: CalendarEvent = {
         title: 'All Day Event',
         startDate: new Date('2023-01-01'),
@@ -64,7 +130,7 @@ describe('AppleCalendarService', () => {
 
       await service.addEvent(mockEvent)
 
-      const calledBody = (fetch as jest.Mock).mock.calls[0][1].body
+      const calledBody = (fetch as jest.Mock).mock.calls[3][1].body
       expect(calledBody).toContain('DTSTART;VALUE=DATE:20230101')
       expect(calledBody).toContain('DTEND;VALUE=DATE:20230102')
     })
@@ -72,6 +138,8 @@ describe('AppleCalendarService', () => {
 
   describe('updateEvent', () => {
     it('should update an existing calendar event', async () => {
+      setupCalDAVMocks()
+
       const eventId = 'test-event-id'
       const mockEvent: CalendarEvent = {
         title: 'Updated Event',
@@ -86,14 +154,14 @@ describe('AppleCalendarService', () => {
 
       await service.updateEvent(eventId, mockEvent)
 
-      expect(fetch).toHaveBeenCalledWith(
+      expect(fetch).toHaveBeenLastCalledWith(
         expect.stringContaining(
-          `/calendars/Square Appointments/events/${eventId}`
+          `/123456789/calendars/square-appointments/${eventId}.ics`
         ),
         expect.objectContaining({
           method: 'PUT',
           headers: expect.objectContaining({
-            'Content-Type': 'text/calendar',
+            'Content-Type': 'text/calendar; charset=utf-8',
           }),
         })
       )
@@ -102,6 +170,8 @@ describe('AppleCalendarService', () => {
 
   describe('deleteEvent', () => {
     it('should delete a calendar event', async () => {
+      setupCalDAVMocks()
+
       const eventId = 'test-event-id'
 
       ;(fetch as jest.Mock).mockResolvedValueOnce({
@@ -111,9 +181,9 @@ describe('AppleCalendarService', () => {
 
       await service.deleteEvent(eventId)
 
-      expect(fetch).toHaveBeenCalledWith(
+      expect(fetch).toHaveBeenLastCalledWith(
         expect.stringContaining(
-          `/calendars/Square Appointments/events/${eventId}`
+          `/123456789/calendars/square-appointments/${eventId}.ics`
         ),
         expect.objectContaining({
           method: 'DELETE',
@@ -124,6 +194,8 @@ describe('AppleCalendarService', () => {
 
   describe('getEvent', () => {
     it('should retrieve a calendar event', async () => {
+      setupCalDAVMocks()
+
       const eventId = 'test-event-id'
       const mockICalResponse = `BEGIN:VCALENDAR
 VERSION:2.0
@@ -159,9 +231,16 @@ END:VCALENDAR`
     })
 
     it('should return null for non-existent event', async () => {
+      setupCalDAVMocks()
+
       const eventId = 'non-existent-id'
 
-      ;(fetch as jest.Mock).mockRejectedValueOnce(new Error('404 Not Found'))
+      ;(fetch as jest.Mock).mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+        statusText: 'Not Found',
+        text: jest.fn().mockResolvedValue(''),
+      })
 
       const event = await service.getEvent(eventId)
 
@@ -171,7 +250,16 @@ END:VCALENDAR`
 
   describe('listEvents', () => {
     it('should list calendar events', async () => {
-      const mockICalResponse = `BEGIN:VCALENDAR
+      setupCalDAVMocks()
+
+      const mockCalendarQueryResponse = `<?xml version="1.0" encoding="utf-8"?>
+<D:multistatus xmlns:D="DAV:" xmlns:C="urn:ietf:params:xml:ns:caldav">
+  <D:response>
+    <D:href>/123456789/calendars/square-appointments/event-1.ics</D:href>
+    <D:propstat>
+      <D:prop>
+        <D:getetag>"test-etag-1"</D:getetag>
+        <C:calendar-data>BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Square Cal Sync//EN
 BEGIN:VEVENT
@@ -180,17 +268,35 @@ SUMMARY:Event 1
 DTSTART:20230101T100000Z
 DTEND:20230101T110000Z
 END:VEVENT
+END:VCALENDAR</C:calendar-data>
+      </D:prop>
+      <D:status>HTTP/1.1 200 OK</D:status>
+    </D:propstat>
+  </D:response>
+  <D:response>
+    <D:href>/123456789/calendars/square-appointments/event-2.ics</D:href>
+    <D:propstat>
+      <D:prop>
+        <D:getetag>"test-etag-2"</D:getetag>
+        <C:calendar-data>BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Square Cal Sync//EN
 BEGIN:VEVENT
 UID:event-2
 SUMMARY:Event 2
 DTSTART:20230102T100000Z
 DTEND:20230102T110000Z
 END:VEVENT
-END:VCALENDAR`
+END:VCALENDAR</C:calendar-data>
+      </D:prop>
+      <D:status>HTTP/1.1 200 OK</D:status>
+    </D:propstat>
+  </D:response>
+</D:multistatus>`
 
       ;(fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
-        text: jest.fn().mockResolvedValue(mockICalResponse),
+        text: jest.fn().mockResolvedValue(mockCalendarQueryResponse),
       })
 
       const events = await service.listEvents()
@@ -201,22 +307,20 @@ END:VCALENDAR`
     })
 
     it('should include date range parameters when provided', async () => {
+      setupCalDAVMocks()
+
       const startDate = new Date('2023-01-01')
       const endDate = new Date('2023-01-31')
 
       ;(fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
-        text: jest.fn().mockResolvedValue('BEGIN:VCALENDAR\nEND:VCALENDAR'),
+        text: jest.fn().mockResolvedValue('<?xml version="1.0" encoding="utf-8"?><D:multistatus xmlns:D="DAV:"></D:multistatus>'),
       })
 
       await service.listEvents(startDate, endDate)
 
-      expect(fetch).toHaveBeenCalledWith(
-        expect.stringContaining(
-          'start=2023-01-01T00%3A00%3A00.000Z&end=2023-01-31T00%3A00%3A00.000Z'
-        ),
-        expect.any(Object)
-      )
+      const lastCall = (fetch as jest.Mock).mock.calls[(fetch as jest.Mock).mock.calls.length - 1]
+      expect(lastCall[1].body).toContain('<C:time-range start="20230101T000000Z" end="20230131T000000Z"/>')
     })
   })
 
@@ -226,6 +330,7 @@ END:VCALENDAR`
         ok: false,
         status: 401,
         statusText: 'Unauthorized',
+        text: jest.fn().mockResolvedValue('Unauthorized access'),
       })
 
       const mockEvent: CalendarEvent = {
@@ -235,13 +340,15 @@ END:VCALENDAR`
       }
 
       await expect(service.addEvent(mockEvent)).rejects.toThrow(
-        'Calendar request failed: 401 Unauthorized'
+        'CalDAV request failed: 401 Unauthorized'
       )
     })
   })
 
   describe('iCal text escaping', () => {
     it('should properly escape special characters in iCal text', async () => {
+      setupCalDAVMocks()
+
       const mockEvent: CalendarEvent = {
         title: 'Event with; special, characters\\and\nnewlines',
         description: 'Description with\r\nline breaks',
@@ -256,7 +363,7 @@ END:VCALENDAR`
 
       await service.addEvent(mockEvent)
 
-      const calledBody = (fetch as jest.Mock).mock.calls[0][1].body
+      const calledBody = (fetch as jest.Mock).mock.calls[3][1].body
       expect(calledBody).toContain(
         'SUMMARY:Event with\\; special\\, characters\\\\and\\nnewlines'
       )

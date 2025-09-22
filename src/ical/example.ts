@@ -4,7 +4,7 @@ import { AppleCalendarService, CalendarEvent, CalendarCredentials } from './inde
 
 async function exampleUsage () {
   const credentials: CalendarCredentials = getAppleCalendarConfig()
-  const calendarService = new AppleCalendarService(credentials, 'Square Appointments')
+  const calendarService = new AppleCalendarService(credentials)
 
   const newEvent: CalendarEvent = {
     title: 'Square Appointment',

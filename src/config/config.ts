@@ -36,14 +36,16 @@ export function getAppleCalendarConfig (): CalendarCredentials {
   const appleUsername = process.env.APPLE_USERNAME
   const appPassword = process.env.APPLE_APP_PASSWORD
   const caldavServerUrl = process.env.APPLE_CALDAV_SERVER
+  const calendarName = process.env.APPLE_CALENDAR_NAME
 
-  if (!appleUsername || !appPassword || !caldavServerUrl) {
+  if (!appleUsername || !appPassword || !caldavServerUrl || !calendarName) {
     throw new Error('Missing required Apple Calendar configuration.  Please check your environment variables.')
   }
 
   return {
     appleId: appleUsername,
     appPassword: appPassword,
-    caldavServerUrl: caldavServerUrl
+    caldavServerUrl: caldavServerUrl,
+    calendarName: calendarName
   }
 }

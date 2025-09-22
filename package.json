@@ -10,6 +10,7 @@
     "dev": "ts-node src/app.ts",
     "test": "jest",
     "test:watch": "jest --watch",
+    "test:integration": "jest --testNamePattern=integration",
     "format": "prettier --write src/**/*.ts"
   },
   "dependencies": {
