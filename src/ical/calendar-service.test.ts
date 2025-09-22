@@ -1,8 +1,13 @@
 import { AppleCalendarService } from './calendar-service'
-import { CalendarEvent } from './types'
+import { CalendarCredentials, CalendarEvent } from './types'
 import { getAppleCalendarConfig } from '../config/config'
 
-const appleCredentials = getAppleCalendarConfig()
+const appleCredentials: CalendarCredentials = {
+  appleId: 'mock',
+  appPassword: 'mock',
+  caldavServerUrl: 'mock',
+  calendarName: 'mock'
+}
 
 global.fetch = jest.fn()
 
