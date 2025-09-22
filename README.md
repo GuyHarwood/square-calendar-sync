@@ -1,5 +1,7 @@
 # Square Cal Sync
 
+[![Build and run tests](https://github.com/GuyHarwood/square-calendar-sync/actions/workflows/ci.yml/badge.svg)](https://github.com/GuyHarwood/square-calendar-sync/actions/workflows/ci.yml)
+
 ## Summary
 
 Synchronises a squareup.com appointment calendar with an Apple iCal calendar via the square API.
