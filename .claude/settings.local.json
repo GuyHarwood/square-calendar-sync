@@ -8,7 +8,13 @@
       "Bash(npm test)",
       "Bash(npm run format:*)",
       "Bash(npm run test:integration:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(yarn add:*)",
+      "Bash(yarn build)",
+      "Bash(yarn lint)",
+      "Bash(yarn remove:*)",
+      "Bash(git add:*)",
+      "Bash(git rm:*)"
     ],
     "deny": [],
     "ask": []
