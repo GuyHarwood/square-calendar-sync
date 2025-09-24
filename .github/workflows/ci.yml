@@ -10,8 +10,9 @@ on:
     branches: ['main']
 
 jobs:
-  build:
+  backend:
     runs-on: ubuntu-latest
+    name: Backend Tests
 
     strategy:
       matrix:
@@ -25,9 +26,41 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'yarn'
-      - run: yarn install
-      - run: yarn build
-      - run: yarn test
-      - run: cd src/ui
-      - run: yarn install
-      - run: yarn build
+          cache-dependency-path: 'src/backend/yarn.lock'
+      - name: Install backend dependencies
+        run: yarn install
+        working-directory: src/backend
+      - name: Build backend
+        run: yarn build
+        working-directory: src/backend
+      - name: Test backend
+        run: yarn test
+        working-directory: src/backend
+
+  ui:
+    runs-on: ubuntu-latest
+    name: UI Tests
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'yarn'
+          cache-dependency-path: 'src/ui/yarn.lock'
+      - name: Install UI dependencies
+        run: yarn install
+        working-directory: src/ui
+      - name: Build UI
+        run: yarn build
+        working-directory: src/ui
+      - name: Lint UI
+        run: yarn lint
+        working-directory: src/ui
+
