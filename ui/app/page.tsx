@@ -12,15 +12,15 @@ interface Appointment {
   appointment_time: string
   status: string
   notes: string | null
-  customer: {
+  customers: {
     name: string
     phone: string | null
-  }
-  service: {
+  }[] | null
+  services: {
     name: string
     duration_minutes: number
     price: number
-  }
+  }[] | null
 }
 
 async function getUpcomingAppointments(): Promise<Appointment[]> {
@@ -34,8 +34,8 @@ async function getUpcomingAppointments(): Promise<Appointment[]> {
       appointment_time,
       status,
       notes,
-      customer:customers(name, phone),
-      service:services(name, duration_minutes, price)
+      customers!inner(name, phone),
+      services!inner(name, duration_minutes, price)
     `)
     .gte("appointment_date", new Date().toISOString().split("T")[0])
     .eq("status", "scheduled")
@@ -82,7 +82,7 @@ export default async function Dashboard() {
         {/* Dashboard Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-2xl font-bold text-foreground text-balance">Today's Schedule</h2>
+            <h2 className="text-2xl font-bold text-foreground text-balance">Today&apos;s Schedule</h2>
             <p className="text-muted-foreground">Manage your upcoming appointments</p>
           </div>
           <Link href="/book">
@@ -103,7 +103,7 @@ export default async function Dashboard() {
                 <Calendar className="w-12 h-12 text-muted-foreground mb-4" />
                 <h3 className="text-lg font-semibold text-foreground mb-2">No upcoming appointments</h3>
                 <p className="text-muted-foreground text-center mb-4">
-                  You don't have any scheduled appointments. Book a new one to get started.
+                  You don&apos;t have any scheduled appointments. Book a new one to get started.
                 </p>
                 <Link href="/book">
                   <Button>
@@ -125,9 +125,9 @@ export default async function Dashboard() {
                             <User className="w-5 h-5 text-primary" />
                           </div>
                           <div>
-                            <h4 className="font-semibold text-foreground">{appointment.customer.name}</h4>
-                            {appointment.customer.phone && (
-                              <p className="text-sm text-muted-foreground">{appointment.customer.phone}</p>
+                            <h4 className="font-semibold text-foreground">{appointment.customers?.[0]?.name || 'Unknown'}</h4>
+                            {appointment.customers?.[0]?.phone && (
+                              <p className="text-sm text-muted-foreground">{appointment.customers?.[0]?.phone}</p>
                             )}
                           </div>
                         </div>
@@ -143,7 +143,7 @@ export default async function Dashboard() {
                           </div>
                           <div className="flex items-center gap-2">
                             <Scissors className="w-4 h-4 text-muted-foreground" />
-                            <span className="text-sm font-medium">{appointment.service.name}</span>
+                            <span className="text-sm font-medium">{appointment.services?.[0]?.name || 'Unknown Service'}</span>
                           </div>
                         </div>
 
@@ -162,9 +162,9 @@ export default async function Dashboard() {
                           </Button>
                         </Link>
                         <Badge variant="secondary" className="text-xs">
-                          {appointment.service.duration_minutes}min
+                          {appointment.services?.[0]?.duration_minutes || 0}min
                         </Badge>
-                        <span className="text-lg font-semibold text-foreground">${appointment.service.price}</span>
+                        <span className="text-lg font-semibold text-foreground">${appointment.services?.[0]?.price || 0}</span>
                       </div>
                     </div>
                   </CardContent>
@@ -178,7 +178,7 @@ export default async function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Today's Revenue</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">Today&apos;s Revenue</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-foreground">$240</div>

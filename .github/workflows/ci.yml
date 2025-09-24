@@ -26,16 +26,16 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'yarn'
-          cache-dependency-path: 'src/backend/yarn.lock'
+          cache-dependency-path: 'backend/yarn.lock'
       - name: Install backend dependencies
         run: yarn install
-        working-directory: src/backend
+        working-directory: backend
       - name: Build backend
         run: yarn build
-        working-directory: src/backend
+        working-directory: backend
       - name: Test backend
         run: yarn test
-        working-directory: src/backend
+        working-directory: backend
 
   ui:
     runs-on: ubuntu-latest
@@ -53,14 +53,14 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'yarn'
-          cache-dependency-path: 'src/ui/yarn.lock'
+          cache-dependency-path: 'ui/yarn.lock'
       - name: Install UI dependencies
         run: yarn install
-        working-directory: src/ui
+        working-directory: ui
       - name: Build UI
         run: yarn build
-        working-directory: src/ui
+        working-directory: ui
       - name: Lint UI
         run: yarn lint
-        working-directory: src/ui
+        working-directory: ui
 

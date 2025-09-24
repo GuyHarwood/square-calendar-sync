@@ -15,15 +15,15 @@ interface Appointment {
   appointment_time: string
   status: string
   notes: string | null
-  customer: {
+  customers: {
     name: string
     phone: string | null
-  }
-  service: {
+  }[] | null
+  services: {
     name: string
     duration_minutes: number
     price: number
-  }
+  }[] | null
 }
 
 interface CalendarViewProps {
@@ -211,7 +211,7 @@ export function CalendarView({ appointments, currentYear, currentMonth }: Calend
                         <div className="flex items-start justify-between mb-2">
                           <div className="flex items-center gap-2">
                             <User className="w-4 h-4 text-muted-foreground" />
-                            <span className="font-medium text-sm">{appointment.customer.name}</span>
+                            <span className="font-medium text-sm">{appointment.customers?.[0]?.name || 'Unknown'}</span>
                           </div>
                           <div className="flex items-center gap-2">
                             <Link href={`/edit/${appointment.id}`}>
@@ -233,8 +233,8 @@ export function CalendarView({ appointments, currentYear, currentMonth }: Calend
                             <Clock className="w-3 h-3" />
                             <span>{formatTime(appointment.appointment_time)}</span>
                           </div>
-                          <div>{appointment.service.name}</div>
-                          <div className="font-medium text-foreground">${appointment.service.price}</div>
+                          <div>{appointment.services?.[0]?.name || 'Unknown Service'}</div>
+                          <div className="font-medium text-foreground">${appointment.services?.[0]?.price || '0'}</div>
                         </div>
 
                         {appointment.notes && (
