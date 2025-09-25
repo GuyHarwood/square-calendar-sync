@@ -1,8 +1,45 @@
+# Square Cal Sync UI
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+## Environment Variables
+
+The following environment variables are required to run the application:
+
+- `NEXT_PUBLIC_SUPABASE_URL`: Your Supabase project URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Your Supabase anonymous/public key
+
+Create a `.env.local` file in the ui directory and add these variables:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url_here
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+```
+
+## Technology Stack
+
+- **Framework**: Next.js 14 with App Router
+- **Styling**: Tailwind CSS with shadcn/ui components
+- **Database**: Supabase (PostgreSQL)
+- **UI Components**: Radix UI primitives via shadcn/ui
+- **Icons**: Lucide React
+- **Form Handling**: React Hook Form with Zod validation
+- **Charts**: Recharts
+- **Analytics**: Vercel Analytics
 
 ## Getting Started
 
-First, run the development server:
+First, install dependencies:
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+Then run the development server:
 
 ```bash
 npm run dev
