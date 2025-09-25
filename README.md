@@ -1,4 +1,4 @@
-# Square Cal Sync
+# Appoint
 
 [![Build and run tests](https://github.com/GuyHarwood/square-calendar-sync/actions/workflows/ci.yml/badge.svg)](https://github.com/GuyHarwood/square-calendar-sync/actions/workflows/ci.yml)
 
