@@ -1,13 +1,13 @@
 version: '3.8'
 
 networks:
-  square-cal-sync:
+  appoint:
     driver: bridge
 
 services:
   postgres:
     image: postgres:15
-    container_name: square-cal-sync-postgres
+    container_name: appoint-postgres
     environment:
       POSTGRES_DB: ${DB_NAME:-appoint}
       POSTGRES_USER: ${DB_USER:-appoint}
@@ -18,7 +18,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./db/migrations:/docker-entrypoint-initdb.d
     networks:
-      - square-cal-sync
+      - appoint
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-appoint} -d ${DB_NAME:-appoint}"]
       interval: 5s
@@ -27,7 +27,7 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4
-    container_name: square-cal-sync-pgadmin
+    container_name: appoint-pgadmin
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@example.com}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
@@ -36,7 +36,7 @@ services:
     depends_on:
       - postgres
     networks:
-      - square-cal-sync
+      - appoint
     volumes:
       - pgadmin_data:/var/lib/pgadmin
       - ./db/pgladmin/servers.json:/pgladmin4/servers.json:ro

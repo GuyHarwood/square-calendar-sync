@@ -244,7 +244,7 @@ export class AppleCalendarService implements ICalendarService {
       method,
       headers: {
         Authorization: `Basic ${Buffer.from(`${this.credentials.appleId}:${this.credentials.appPassword}`).toString('base64')}`,
-        'User-Agent': 'Square-Cal-Sync/1.0',
+        'User-Agent': 'appoint/1.0',
         ...options.headers,
       },
       body: options.body,

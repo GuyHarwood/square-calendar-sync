@@ -1,5 +1,5 @@
 {
-  "name": "square-cal-sync",
+  "name": "appoint",
   "version": "1.0.0",
   "description": "Synchronises a squareup.com appointment calendar with an Apple iCal calendar",
   "main": "dist/app.js",

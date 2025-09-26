@@ -29,7 +29,7 @@ install_ui () {
   mybanner "Installing ui"
   cd ${scriptDir}/ui
   nvm use
-  yarn install && yarn clean && yarn build
+  yarn install && yarn build
 }
 
 install_db () {
