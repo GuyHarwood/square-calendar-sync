@@ -32,12 +32,12 @@ install_ui () {
   yarn install && yarn build
 }
 
-install_db () {
-  mybanner "Installing DB"
-  cd ${scriptDir}/db
-  nvm use
-  yarn install
-}
+# install_db () {
+#   mybanner "Installing DB"
+#   cd ${scriptDir}/db
+#   nvm use
+#   yarn install
+# }
 
 
 start=`date +%s`
