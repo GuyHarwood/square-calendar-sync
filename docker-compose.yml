@@ -39,7 +39,21 @@ services:
       - appoint
     volumes:
       - pgadmin_data:/var/lib/pgadmin
-      - ./db/pgladmin/servers.json:/pgladmin4/servers.json:ro
+      - ./db/pgadmin/servers.json:/pgadmin4/servers.json:ro
+
+  ui:
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+    container_name: appoint-ui
+    ports:
+      - "${UI_PORT:-3000}:3000"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - postgres
+    networks:
+      - appoint
 
 volumes:
   postgres_data:
