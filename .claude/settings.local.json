@@ -14,7 +14,16 @@
       "Bash(yarn lint)",
       "Bash(yarn remove:*)",
       "Bash(git add:*)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(supabase status:*)",
+      "Bash(yarn list:*)",
+      "Bash(supabase migration:*)",
+      "Bash(psql:*)",
+      "Bash(supabase db:*)",
+      "Bash(docker exec:*)",
+      "Bash(yarn dev)",
+      "Bash(curl -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0\" -H \"apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0\" \"http://127.0.0.1:54321/rest/v1/appointments?select=*\")",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": []

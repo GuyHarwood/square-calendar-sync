@@ -21,7 +21,7 @@ install_backend () {
   mybanner "Installing backend"
   cd ${scriptDir}/backend
   nvm use
-  yarn
+  yarn install
   yarn build
 }
 
@@ -32,18 +32,9 @@ install_ui () {
   yarn install && yarn build
 }
 
-# install_db () {
-#   mybanner "Installing DB"
-#   cd ${scriptDir}/db
-#   nvm use
-#   yarn install
-# }
-
-
 start=`date +%s`
 install_backend
 install_ui
-install_db
 end=`date +%s`
 runtime=$((end-start))
 mybanner "Packages installed and built in: ${runtime} seconds"

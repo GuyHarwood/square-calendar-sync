@@ -15,12 +15,12 @@ interface Appointment {
   customers: {
     name: string
     phone: string | null
-  }[] | null
+  } | null
   services: {
     name: string
     duration_minutes: number
     price: number
-  }[] | null
+  } | null
 }
 
 async function getUpcomingAppointments(): Promise<Appointment[]> {
@@ -34,8 +34,8 @@ async function getUpcomingAppointments(): Promise<Appointment[]> {
       appointment_time,
       status,
       notes,
-      customers!inner(name, phone),
-      services!inner(name, duration_minutes, price)
+      customers(name, phone),
+      services(name, duration_minutes, price)
     `)
     .gte("appointment_date", new Date().toISOString().split("T")[0])
     .eq("status", "scheduled")
@@ -48,7 +48,7 @@ async function getUpcomingAppointments(): Promise<Appointment[]> {
     return []
   }
 
-  return data || []
+  return (data as unknown as Appointment[]) || []
 }
 
 function formatDate(dateString: string): string {
@@ -125,9 +125,9 @@ export default async function Dashboard() {
                             <User className="w-5 h-5 text-primary" />
                           </div>
                           <div>
-                            <h4 className="font-semibold text-foreground">{appointment.customers?.[0]?.name || 'Unknown'}</h4>
-                            {appointment.customers?.[0]?.phone && (
-                              <p className="text-sm text-muted-foreground">{appointment.customers?.[0]?.phone}</p>
+                            <h4 className="font-semibold text-foreground">{appointment.customers?.name || 'Unknown'}</h4>
+                            {appointment.customers?.phone && (
+                              <p className="text-sm text-muted-foreground">{appointment.customers?.phone}</p>
                             )}
                           </div>
                         </div>
@@ -143,7 +143,7 @@ export default async function Dashboard() {
                           </div>
                           <div className="flex items-center gap-2">
                             <Scissors className="w-4 h-4 text-muted-foreground" />
-                            <span className="text-sm font-medium">{appointment.services?.[0]?.name || 'Unknown Service'}</span>
+                            <span className="text-sm font-medium">{appointment.services?.name || 'Unknown Service'}</span>
                           </div>
                         </div>
 
@@ -162,9 +162,9 @@ export default async function Dashboard() {
                           </Button>
                         </Link>
                         <Badge variant="secondary" className="text-xs">
-                          {appointment.services?.[0]?.duration_minutes || 0}min
+                          {appointment.services?.duration_minutes || 0}min
                         </Badge>
-                        <span className="text-lg font-semibold text-foreground">${appointment.services?.[0]?.price || 0}</span>
+                        <span className="text-lg font-semibold text-foreground">${appointment.services?.price || 0}</span>
                       </div>
                     </div>
                   </CardContent>
