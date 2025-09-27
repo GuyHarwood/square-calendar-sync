@@ -14,12 +14,12 @@ interface Appointment {
   customers: {
     name: string
     phone: string | null
-  }[] | null
+  } | null
   services: {
     name: string
     duration_minutes: number
     price: number
-  }[] | null
+  } | null
 }
 
 async function getMonthAppointments(year: number, month: number): Promise<Appointment[]> {
@@ -37,8 +37,8 @@ async function getMonthAppointments(year: number, month: number): Promise<Appoin
       appointment_time,
       status,
       notes,
-      customers!inner(name, phone),
-      services!inner(name, duration_minutes, price)
+      customers(name, phone),
+      services(name, duration_minutes, price)
     `)
     .gte("appointment_date", firstDay)
     .lte("appointment_date", lastDay)
@@ -50,7 +50,7 @@ async function getMonthAppointments(year: number, month: number): Promise<Appoin
     return []
   }
 
-  return data || []
+  return (data as unknown as Appointment[]) || []
 }
 
 export default async function CalendarPage({

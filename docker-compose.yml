@@ -1,0 +1,18 @@
+version: '3.8'
+
+networks:
+  appoint:
+    driver: bridge
+
+services:
+  ui:
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+    container_name: appoint-ui
+    ports:
+      - "${UI_PORT:-3000}:3000"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - appoint

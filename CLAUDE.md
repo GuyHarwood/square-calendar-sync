@@ -49,3 +49,5 @@ This is a greenfield project. The codebase currently contains only documentation
 - Node.js v22
 - Square Developer Account with API access
 - Apple ID for calendar access
+
+[TODO list](./TODO.md)

@@ -1,45 +1,40 @@
-# Square Cal Sync
+# Appoint
 
 [![Build and run tests](https://github.com/GuyHarwood/square-calendar-sync/actions/workflows/ci.yml/badge.svg)](https://github.com/GuyHarwood/square-calendar-sync/actions/workflows/ci.yml)
 
 ## Summary
 
-Synchronises a squareup.com appointment calendar with an Apple iCal calendar via the square API.
+Manage Appointments & Services for Hairdressers.
 
-## Requirements
-
-When executed it will access the squareup.com API, read future appointments (up to a maximum of 31 days ahead, a limitation by square) and synchronise these with an apple calendar. Each apple calendar entry is populated with a square appointment identifier for easy synchronisation of modified entries.
 
 ## Tech Stack
 
 - Typescript
   - Prettier for code formatting
   - Jest for unit tests
+- Supabase
+- Next.js
 
 ## Prerequisites
 
 - Node JS (v22 LTS)
-- Square Developer Account with API access
 - Apple ID
 
 ## Installation & setup
 
-Install all the things (examples below use yarn)
+```bash
+# install all the things...
+./setup.sh
 
-`yarn install`
+# start em up...
+./start.sh
+```
 
-Create and populate your env file
+## Useful info
 
-`cp .example.env .env`
-
-run the unit tests...
-
-`yarn test`
-
-run the integration tests...
-
-`yarn test:integration`
-
-run the app...
-
-`yarn start`
+- API URL: http://127.0.0.1:54321
+- GraphQL URL: http://127.0.0.1:54321/graphql/v1
+- S3 Storage URL: http://127.0.0.1:54321/storage/v1/s3
+- Database URL: postgresql://postgres:postgres@127.0.0.1:54322/postgres
+- Studio URL: http://127.0.0.1:54323
+- Mailpit URL: http://127.0.0.1:54324
