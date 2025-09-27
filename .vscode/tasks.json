@@ -1,0 +1,72 @@
+{
+  "version": "2.0.0",
+  "presentation": {
+    "echo": false,
+    "reveal": "always",
+    "focus": true,
+    "panel": "dedicated",
+    "showReuseMessage": true
+  },
+  "tasks": [
+    {
+      "label": "Create Claude and Bash",
+      "dependsOn": [
+        "First",
+        "Second"
+      ],
+      // Mark as the default build task so cmd/ctrl+shift+b will create them
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      // Try start the task on folder open
+      "runOptions": {
+        "runOn": "folderOpen"
+      }
+    },
+    {
+      // The name that shows up in terminal tab
+      "label": "Claude",
+      // The task will launch a shell
+      "type": "shell",
+      "icon": {
+        "id": "terminal-bash"
+      },
+      "command": "",
+      // Set the shell type
+      "options": {
+        "shell": {
+          "executable": "bash",
+          "args": []
+        }
+      },
+      // Mark as a background task to avoid the spinner animation on the terminal tab
+      "isBackground": true,
+      "problemMatcher": [],
+      // Create the tasks in a terminal group
+      "presentation": {
+        "group": "guys-terms"
+      }
+    },
+    {
+      "label": "Second",
+      "type": "shell",
+            "icon": {
+        "color": "terminal.ansiMagenta",
+        "id": "robot"
+      },
+      "command": "",
+      "options": {
+        "shell": {
+          "executable": "claude",
+          "args": []
+        }
+      },
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "group": "guys-terms"
+      }
+    }
+  ]
+}
